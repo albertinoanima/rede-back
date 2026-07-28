@@ -11,9 +11,10 @@ import { mongoPlugin } from "./plugins/mongo.js";
 import { initUserRepository } from "./modules/users/user.repository.js";
 
 const app = Fastify({
-  logger: {
-    level: process.env.NODE_ENV === "test" ? "silent" : "info"
-  }
+  logger: true
+  // logger: {
+  //   level: process.env.NODE_ENV === "test" ? "silent" : "info"
+  // }
 });
 
 await app.register(helmet);
