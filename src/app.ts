@@ -10,30 +10,34 @@ import { mongoPlugin } from "./plugins/mongo.js";
 
 import { initUserRepository } from "./modules/users/user.repository.js";
 
-export async function buildApp() {
-  const app = Fastify({
-    logger: {
-      level: process.env.NODE_ENV === "test" ? "silent" : "info"
-    }
-  });
+const app = Fastify({
+  logger: {
+    level: process.env.NODE_ENV === "test" ? "silent" : "info"
+  }
+});
 
-  await app.register(helmet);
-  await app.register(cors, { origin: true });
-  await app.register(sensible);
-  await app.register(mongoPlugin);
-  await app.register(jwtPlugin);
-  
-  initUserRepository(app.mongo.db);
+await app.register(helmet);
+await app.register(cors, { origin: true });
+await app.register(sensible);
+await app.register(mongoPlugin);
+await app.register(jwtPlugin);
 
-  app.setErrorHandler(errorHandler);
+initUserRepository(app.mongo.db);
 
-  app.get("/health", async () => ({
-    status: "ok",
-    service: "Rede Back-End Working"
-  }));
+app.setErrorHandler(errorHandler);
 
-  await app.register(authRoutes, { prefix: "/api/v1/auth" });
-  await app.register(userRoutes, { prefix: "/api/v1/users" });
+app.get("/health", async () => ({
+  status: "ok",
+  service: "Rede Back-End Working"
+}));
 
-  return app;
+await app.register(authRoutes, { prefix: "/api/v1/auth" });
+await app.register(userRoutes, { prefix: "/api/v1/users" });
+
+await app.ready();
+
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+  app.listen({ port: 3000, host: "0.0.0.0" });
 }
+
+export default app;
