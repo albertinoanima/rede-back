@@ -36,8 +36,4 @@ await app.register(userRoutes, { prefix: "/api/v1/users" });
 
 await app.ready();
 
-if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
-  app.listen({ port: 3000, host: "0.0.0.0" });
-}
-
 export default app;
