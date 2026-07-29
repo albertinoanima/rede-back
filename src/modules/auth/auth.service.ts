@@ -52,7 +52,13 @@ export async function signup(input: TempSignupInput) {
   });
 
   if (!isGoogleSignup) {
-    await sendConfirmationEmail(newUser.email, newUser.name, emailConfirmationToken!);
+    try {
+      await sendConfirmationEmail(newUser.email, newUser.name, emailConfirmationToken!);
+    } catch (err) {
+      console.log(err);
+      //request.log.error({ err, email: newUser.email }, "Falha ao enviar email de confirmação");
+      // não relança — user foi criado, token existe, pode reenviar depois
+    }
   }
 
   return {
@@ -121,7 +127,15 @@ export async function requestPasswordReset(email: string) {
   if (!user) return; // não revela se o email existe
 
   const emailConfirmationToken = nanoid(32);
-  await sendConfirmationEmail(user.email, user.name, emailConfirmationToken!);
+
+  try {
+    await sendConfirmationEmail(user.email, user.name, emailConfirmationToken!);
+  } catch (err) {
+    console.log(err);
+    //request.log.error({ err, email: newUser.email }, "Falha ao enviar email de confirmação");
+    // não relança — user foi criado, token existe, pode reenviar depois
+  }
+
 }
 
 
