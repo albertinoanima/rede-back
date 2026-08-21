@@ -1,5 +1,5 @@
 import app from "./app.js";
-import { env } from "./config/env.js";
+//import { env } from "./config/env.js";
 
 try {
   //await app.listen({ host: env.HOST, port: env.PORT });
